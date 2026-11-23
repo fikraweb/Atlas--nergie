@@ -94,6 +94,10 @@ const number = company.whatsappNumber.replace(/[\s+()-]/g, '');
 const hasNumber = /^[1-9]\d{7,14}$/.test(number);
 const whatsappUrl = message => 'https://wa.me/' + number + '?text=' + encodeURIComponent(message);
 
+if (hasNumber) {
+  document.querySelector('#whatsapp-number').textContent = '+' + number;
+}
+
 document.querySelectorAll('[data-whatsapp]').forEach(link => {
   if (hasNumber) {
     link.href = whatsappUrl('Bonjour Atlas Énergie, je souhaite échanger au sujet de mon projet.');

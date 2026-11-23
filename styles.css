@@ -113,19 +113,18 @@ i {
 }
 .brand {
   display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 900;
-  font-size: 23px;
-  line-height: 0.95;
-  letter-spacing: 0.08em;
   flex-shrink: 0;
+  align-items: center;
 }
-.brand > span > span {
-  display: block;
-  font-size: 10px;
-  margin-top: 5px;
-  letter-spacing: 0.28em;
+.brand img {
+  width: 112px;
+  height: 66px;
+  object-fit: contain;
+}
+footer .brand img {
+  width: 146px;
+  height: 90px;
+  object-position: left center;
 }
 .nav-wrap nav {
   display: flex;
@@ -796,6 +795,10 @@ body:has(dialog[open]) {
   }
   .nav-wrap {
     height: 65px;
+  }
+  .brand img {
+    width: 96px;
+    height: 54px;
   }
   .header-quote {
     display: none;
