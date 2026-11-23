@@ -1,5 +1,7 @@
-import { services as fr } from '../content.js';
-import { services as ar } from '../content-ar.js';
+import { setupPhotos } from './photos.js';
+import { setupQuotes } from './quotes.js';
+import { labels as frenchLabels, services as fr } from '../content.js';
+import { labels as arabicLabels, services as ar } from '../content-ar.js';
 import { company } from '../config.js';
 
 const $ = selector => document.querySelector(selector);
@@ -11,7 +13,7 @@ const languageSelect = $('#edit-language');
 const periodSelect = $('#period');
 const formatting = new Intl.NumberFormat('fr-MA');
 const defaults = { fr, ar };
-const fields = ['title', 'summary', 'description'];
+const fields = ['title', 'summary', 'description', 'benefits', 'solutions'];
 const metrics = [
   ['page_view', 'Vues de pages'],
   ['service_open', 'Fiches ouvertes'],
@@ -29,10 +31,10 @@ function append(parent, tag, text, className) {
   return element;
 }
 
-async function request(path = '', options = {}) {
-  const response = await fetch('/api/admin' + path, {
+async function request(path = '', { contentType = 'application/json', ...options } = {}, endpoint = '/api/admin') {
+  const response = await fetch(endpoint + path, {
     ...options,
-    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': contentType },
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -46,6 +48,9 @@ function logout() {
   token = '';
   draft = undefined;
   editor.reset();
+  quotes.clear();
+  $('#photo-form').reset();
+  $('#photo-status').textContent = '';
   dashboard.hidden = true;
   $('#logout').hidden = true;
   login.hidden = false;
@@ -54,11 +59,15 @@ function logout() {
   $('#login-form').elements.token.focus();
 }
 
-function currentService() {
-  const lang = languageSelect.value;
-  const id = serviceSelect.value;
-  return draft.services[lang]?.[id] ?? defaults[lang].find(service => service.id === id);
+function serviceFor(lang, id) {
+  return { ...defaults[lang].find(service => service.id === id), ...draft?.services[lang]?.[id] };
 }
+
+const quotes = setupQuotes(request, (lang, id) => serviceFor(lang, id).title || id);
+const renderPhotos = setupPhotos({
+  request, currentDraft: () => draft, serviceSelect, defaults,
+  labels: { fr: frenchLabels, ar: arabicLabels },
+});
 
 function showPublished(updatedAt) {
   $('#published-at').textContent = updatedAt
@@ -69,8 +78,11 @@ function showPublished(updatedAt) {
 }
 
 function loadService() {
-  const service = currentService();
-  for (const field of fields) editor.elements[field].value = service[field];
+  const service = serviceFor(languageSelect.value, serviceSelect.value);
+  for (const field of fields) {
+    const value = service[field];
+    editor.elements[field].value = Array.isArray(value) ? value.join('\n') : value;
+  }
 }
 
 function loadServiceMenu() {
@@ -86,7 +98,10 @@ function updateDraft() {
   const lang = languageSelect.value;
   draft.services[lang] ??= {};
   draft.services[lang][serviceSelect.value] = Object.fromEntries(
-    fields.map(field => [field, editor.elements[field].value])
+    fields.map(field => {
+      const value = editor.elements[field].value;
+      return [field, ['benefits', 'solutions'].includes(field) ? value.split('\n').map(line => line.trim()).filter(Boolean) : value];
+    })
   );
 }
 
@@ -185,15 +200,18 @@ $('#login-form').addEventListener('submit', async event => {
     draft = {
       whatsappNumber: data.content.whatsappNumber ?? company.whatsappNumber,
       services: data.content.services ?? {},
+      media: data.content.media ?? {},
       revision: data.revision,
     };
     editor.elements.whatsappNumber.value = draft.whatsappNumber;
     loadServiceMenu();
+    renderPhotos();
     showPublished(data.updatedAt);
     renderStats(data);
     login.hidden = true;
     dashboard.hidden = false;
     $('#logout').hidden = false;
+    quotes.load();
     status.textContent = '';
   } catch (error) {
     token = '';
@@ -207,7 +225,10 @@ $('#logout').addEventListener('click', logout);
 $('#refresh').addEventListener('click', refresh);
 periodSelect.addEventListener('change', refresh);
 languageSelect.addEventListener('change', loadServiceMenu);
-serviceSelect.addEventListener('change', loadService);
+serviceSelect.addEventListener('change', () => {
+  loadService();
+  renderPhotos();
+});
 for (const field of fields) editor.elements[field].addEventListener('input', updateDraft);
 editor.addEventListener('submit', async event => {
   event.preventDefault();
@@ -221,6 +242,7 @@ editor.addEventListener('submit', async event => {
     if (draft) {
       draft.revision = data.revision;
       showPublished(data.updatedAt);
+      $('#photo-status').textContent = '';
       status.textContent = 'Modifications publiées.';
       refresh();
     }

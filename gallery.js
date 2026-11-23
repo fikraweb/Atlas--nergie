@@ -89,20 +89,27 @@ const captions = {
   ],
 };
 
-export function galleryFor(services, labels, arabic) {
-  const categories = services.map(service => {
-    const category = service.id;
-    const projects = [{ category, image: 'project-' + category, title: service.project }];
-    if (category === 'solar') {
-      projects.push({ category, image: 'solar', title: labels.solarExample });
-    }
-    return projects.concat(captions[category].map((caption, index) => ({
-      category,
-      image: 'gallery/' + category + '-' + (index + 1),
-      title: caption[arabic ? 1 : 0],
-    })));
+export function serviceGallery(service, labels, arabic, edits = []) {
+  const category = service.id;
+  const photos = [{ category, image: 'project-' + category, title: service.project }];
+  if (category === 'solar') {
+    photos.push({ category, image: 'solar', title: labels.solarExample });
+  }
+  photos.push(...captions[category].map((caption, index) => ({
+    category,
+    image: 'gallery/' + category + '-' + (index + 1),
+    title: caption[arabic ? 1 : 0],
+  })));
+  edits.forEach((photo, index) => {
+    if (photo) photos[index] = { category, image: photo.image, title: arabic ? photo.ar : photo.fr };
   });
+  return photos;
+}
 
+export function galleryFor(services, labels, arabic, media) {
+  const categories = services.map(service => serviceGallery(service, labels, arabic, media?.[service.id]?.gallery));
   // Interleave categories so the overview shows examples of every service.
-  return categories[0].flatMap((_, index) => categories.map(category => category[index]));
+  const size = Math.max(...categories.map(category => category.length));
+  return Array.from({ length: size }, (_, index) => categories.flatMap(category =>
+    category[index] ? [category[index]] : [])).flat();
 }

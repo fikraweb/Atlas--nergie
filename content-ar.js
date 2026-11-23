@@ -100,6 +100,9 @@ export const questions = [
 ];
 
 export const labels = {
+  quoteSending: 'جارٍ إرسال طلبك…',
+  quoteSaved: 'تم تسجيل طلبك. يمكنك أيضاً مراسلتنا عبر واتساب.',
+  quoteFailed: 'تعذّر تأكيد تسجيل الطلب. حاول مجدداً أو تواصل معنا عبر واتساب.',
   previousPhoto: 'الصورة السابقة',
   nextPhoto: 'الصورة التالية',
   moreProjects: 'عرض المزيد من الصور',
@@ -122,12 +125,7 @@ export const labels = {
   service: 'الخدمة المطلوبة:',
   description: 'تفاصيل الطلب:',
   thanks: 'شكراً!',
-  unsent: 'رقم واتساب غير متاح حالياً. لم يُرسل طلبك. ',
-  copy: 'نسخ الطلب',
-  copied: 'تم نسخ الطلب',
-  copyDraft: 'نص الطلب للنسخ',
   openWhatsApp: 'افتح الطلب في واتساب',
-  review: 'راجع رسالتك في واتساب ثم أرسلها. ',
   closeMenu: 'إغلاق القائمة',
   openMenu: 'فتح القائمة',
 };

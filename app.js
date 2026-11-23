@@ -1,6 +1,7 @@
 import { company } from './config.js';
 import { icon } from './icons.js';
 import { galleryFor } from './gallery.js';
+import { mediaUrl } from './media.js';
 
 const arabic = document.documentElement.lang === 'ar';
 const { commitments, labels, questions, services: defaultServices } = await (
@@ -17,6 +18,7 @@ const escapeHtml = value => value.replace(/[&<>"']/g, character => htmlEntities[
 const services = defaultServices.map(service => ({
   ...service,
   ...content.services?.[language]?.[service.id],
+  image: content.media?.[service.id]?.cover || service.image,
 }));
 
 function track(kind, service = '') {
@@ -44,9 +46,9 @@ const form = document.querySelector('#devis');
 const select = form.elements.service;
 const status = document.querySelector('#form-status');
 
-const asset = name => 'assets/' + name + '.webp';
-const list = items => '<ul>' + items.map(item => '<li>' + item + '</li>').join('') + '</ul>';
-const gallery = galleryFor(services, labels, arabic);
+const asset = mediaUrl;
+const list = items => '<ul>' + items.map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>';
+const gallery = galleryFor(services, labels, arabic, content.media);
 
 function showService(service) {
   track('service_open', service.id);
@@ -108,7 +110,7 @@ filters.innerHTML = [{ id: 'all', title: labels.all }, ...services].map(({ id, t
 projectGrid.innerHTML = gallery.map((project, index) => `
   <button type="button" class="project" data-category="${project.category}" data-project="${index}">
     <img src="${asset(project.image)}" alt="" loading="lazy" width="600" height="350">
-    <span>${project.title} ${icon('diagonal')}</span>
+    <span>${escapeHtml(project.title)} ${icon('diagonal')}</span>
   </button>`).join('');
 function updateProjectVisibility() {
   projectGrid.querySelectorAll('.project').forEach((project, index) => {
@@ -200,7 +202,8 @@ document.querySelectorAll('[data-whatsapp]').forEach(link => {
 });
 
 form.addEventListener('input', event => event.target.setCustomValidity(''));
-form.addEventListener('submit', event => {
+let pendingQuote;
+form.addEventListener('submit', async event => {
   event.preventDefault();
   const fields = Object.fromEntries([...new FormData(form)].map(([key, value]) => [key, value.trim()]));
   fields.phone = fields.phone
@@ -226,38 +229,38 @@ form.addEventListener('submit', event => {
     labels.description, fields.description, '', labels.thanks,
   ].join('\n');
 
-  if (!hasNumber) {
-    status.textContent = labels.unsent;
-    const copy = document.createElement('button');
-    copy.type = 'button';
-    copy.className = 'text-link';
-    copy.textContent = labels.copy;
-    copy.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(message);
-        copy.textContent = labels.copied;
-      } catch {
-        const draft = document.createElement('textarea');
-        draft.value = message;
-        draft.readOnly = true;
-        draft.setAttribute('aria-label', labels.copyDraft);
-        copy.replaceWith(draft);
-        draft.select();
-      }
+  const submit = form.querySelector('[type="submit"]');
+  if (submit.disabled) return;
+  submit.disabled = true;
+  status.textContent = labels.quoteSending;
+  const payload = JSON.stringify({ ...fields, language });
+  if (pendingQuote?.payload !== payload) pendingQuote = { payload, key: crypto.randomUUID() };
+  try {
+    const response = await fetch('/api/quotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...fields, language, key: pendingQuote.key }),
+      signal: AbortSignal.timeout(12000),
     });
-    status.append(copy);
-    return;
+    if (!response.ok || !(await response.json()).received) throw new Error('Quote unavailable');
+    status.textContent = labels.quoteSaved;
+    form.reset();
+    pendingQuote = undefined;
+  } catch {
+    status.textContent = labels.quoteFailed;
+  } finally {
+    submit.disabled = false;
   }
 
-  const url = whatsappUrl(message);
-  track('quote_open', service.id);
-  window.open(url, '_blank', 'noopener,noreferrer');
-  const retry = document.createElement('a');
-  retry.href = url;
-  retry.target = '_blank';
-  retry.rel = 'noopener noreferrer';
-  retry.textContent = labels.openWhatsApp;
-  status.replaceChildren(labels.review, retry);
+  if (hasNumber) {
+    const link = document.createElement('a');
+    link.href = whatsappUrl(message);
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = labels.openWhatsApp;
+    link.addEventListener('click', () => track('quote_open', service.id));
+    status.append(' ', link);
+  }
 });
 
 const menu = document.querySelector('.menu-toggle');

@@ -98,6 +98,9 @@ export const questions = [
 ];
 
 export const labels = {
+  quoteSending: 'Envoi de votre demande…',
+  quoteSaved: 'Votre demande a été enregistrée. Vous pouvez aussi nous écrire sur WhatsApp.',
+  quoteFailed: 'L’enregistrement n’a pas pu être confirmé. Réessayez ou contactez-nous sur WhatsApp.',
   previousPhoto: 'Photo précédente',
   nextPhoto: 'Photo suivante',
   moreProjects: 'Afficher plus de photos',
@@ -120,12 +123,7 @@ export const labels = {
   service: 'Service souhaité :',
   description: 'Description du besoin :',
   thanks: 'Merci !',
-  unsent: 'Aucun numéro WhatsApp n’est configuré. Votre demande n’a pas été transmise. ',
-  copy: 'Copier ma demande',
-  copied: 'Demande copiée',
-  copyDraft: 'Votre demande à copier',
   openWhatsApp: 'Ouvrir la demande dans WhatsApp',
-  review: 'Vérifiez votre message dans WhatsApp, puis envoyez-le. ',
   closeMenu: 'Fermer le menu',
   openMenu: 'Ouvrir le menu',
 };

@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/api/site", "/api/admin"],
+  "include": ["/api/site", "/api/admin", "/api/quotes", "/api/media"],
   "exclude": []
 }
