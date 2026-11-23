@@ -1,0 +1,268 @@
+@font-face {
+  font-family: Inter;
+  src: url("../assets/inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: Cairo;
+  src: url("../assets/cairo-arabic.woff2") format("woff2");
+  font-weight: 200 1000;
+  font-display: swap;
+}
+:root {
+  font:
+    16px/1.55 Inter,
+    Cairo,
+    system-ui,
+    sans-serif;
+  color: #15243b;
+  background: #f3f6fa;
+  --line: #dce4ee;
+  --gold: #f8bb3b;
+  --muted: #516179;
+}
+* {
+  box-sizing: border-box;
+}
+[hidden] {
+  display: none !important;
+}
+body {
+  margin: 0;
+}
+h1,
+h2,
+p {
+  margin: 0;
+}
+h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -0.055em;
+  line-height: 1.15;
+}
+h2 {
+  font-size: 19px;
+  letter-spacing: -0.025em;
+}
+a {
+  color: inherit;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px max(20px, calc((100% - 1180px) / 2));
+  background: #101c30;
+  color: white;
+}
+.brand {
+  margin-right: auto;
+}
+.brand img {
+  display: block;
+  object-fit: contain;
+}
+.site-link {
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+main {
+  width: min(1180px, calc(100% - 36px));
+  margin: 34px auto 64px;
+}
+.login {
+  max-width: 440px;
+  margin: 64px auto;
+}
+.login p {
+  margin: 10px 0;
+  color: var(--muted);
+}
+.panel,
+.metric {
+  padding: clamp(16px, 2.6vw, 27px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 5px 20px #15243b08;
+}
+.panel {
+  margin-bottom: 16px;
+}
+.page-heading,
+.period {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.period {
+  align-items: end;
+}
+.eyebrow {
+  color: #805405;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+.page-heading {
+  margin-bottom: 20px;
+}
+.metrics,
+.stats-grid,
+.editor-selects {
+  display: grid;
+  gap: 14px;
+}
+.metrics {
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 16px;
+}
+.metric span,
+.sub {
+  color: var(--muted);
+  font-size: 14px;
+}
+.metric strong {
+  display: block;
+  font-size: 32px;
+  letter-spacing: -0.05em;
+}
+.stats-grid {
+  grid-template-columns: 1.65fr 1fr;
+}
+.sub {
+  margin-top: 4px;
+}
+.timeline {
+  height: 130px;
+  display: flex;
+  align-items: end;
+  gap: 2px;
+  margin: 20px 0 12px;
+}
+.timeline span {
+  flex: 1;
+  min-width: 0;
+  background: #d89210;
+  border-radius: 3px 3px 0 0;
+}
+.lang-stat {
+  margin-top: 16px;
+}
+.lang-stat strong {
+  float: right;
+}
+.lang-stat progress {
+  display: block;
+  width: 100%;
+  accent-color: #a56b04;
+}
+.table-wrap {
+  overflow: auto;
+  margin-top: 12px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+th,
+td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+}
+th:not(:first-child),
+td:not(:first-child) {
+  text-align: right;
+}
+form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.editor-selects {
+  grid-template-columns: repeat(3, 1fr);
+}
+label {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 650;
+}
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+input,
+select,
+textarea {
+  padding: 8px 10px;
+  border: 1px solid #bfccdf;
+  border-radius: 7px;
+  width: 100%;
+  background: #f8fafe;
+  color: inherit;
+}
+textarea {
+  resize: vertical;
+}
+button {
+  justify-self: start;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 14px;
+  background: var(--gold);
+  color: #101c30;
+  font-weight: 750;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.secondary {
+  background: white;
+  border-color: var(--line);
+  font-size: 14px;
+  white-space: nowrap;
+}
+p[role="status"]:not(:empty) {
+  margin: 10px 0;
+  color: #754a00;
+}
+summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+#daily-list {
+  max-height: 185px;
+  overflow: auto;
+  font-size: 13px;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #946000;
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stats-grid,
+  .editor-selects {
+    grid-template-columns: 1fr;
+  }
+  .page-heading {
+    align-items: start;
+  }
+}

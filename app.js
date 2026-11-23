@@ -3,9 +3,32 @@ import { icon } from './icons.js';
 import { galleryFor } from './gallery.js';
 
 const arabic = document.documentElement.lang === 'ar';
-const { commitments, labels, questions, services } = await (
+const { commitments, labels, questions, services: defaultServices } = await (
   arabic ? import('./content-ar.js') : import('./content.js')
 );
+
+const language = arabic ? 'ar' : 'fr';
+const siteApi = '/api/site';
+const content = await fetch(siteApi, { signal: AbortSignal.timeout(1000) })
+  .then(response => response.ok ? response.json() : {})
+  .catch(() => ({}));
+const htmlEntities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const escapeHtml = value => value.replace(/[&<>"']/g, character => htmlEntities[character]);
+const services = defaultServices.map(service => ({
+  ...service,
+  ...content.services?.[language]?.[service.id],
+}));
+
+function track(kind, service = '') {
+  if (navigator.globalPrivacyControl === true || navigator.doNotTrack === '1') return;
+  fetch(siteApi, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ kind, language, service }),
+    keepalive: true,
+  }).catch(() => {});
+}
+track('page_view');
 
 const languageLink = document.querySelector('.language-link');
 const languageUrl = languageLink.href;
@@ -26,11 +49,12 @@ const list = items => '<ul>' + items.map(item => '<li>' + item + '</li>').join('
 const gallery = galleryFor(services, labels, arabic);
 
 function showService(service) {
+  track('service_open', service.id);
   detailBody.innerHTML = `
     <img class="dialog-image" data-service-image="${service.id}" src="${asset(service.image)}" alt="${service.alt}">
     <div class="dialog-content">
-      <h2 id="detail-title">${service.title}</h2>
-      <p>${service.description}</p>
+      <h2 id="detail-title">${escapeHtml(service.title)}</h2>
+      <p>${escapeHtml(service.description)}</p>
       <h3>${labels.benefits}</h3>${list(service.benefits)}
       <h3>${labels.solutions}</h3>${list(service.solutions)}
       ${service.photos ? `<div class="service-photos">${service.photos.map(({ image, caption }) => `
@@ -55,13 +79,13 @@ document.querySelector('#service-grid').innerHTML = services.map(service => `
     <div class="card-image"><img src="${asset(service.image)}" alt="${service.alt}" loading="lazy" width="600" height="360"></div>
     <div class="card-body">
       <i class="icon-box">${icon(service.icon)}</i>
-      <h3>${service.title}</h3>
-      <p>${service.summary}</p>
-      <button class="text-link" type="button" data-service="${service.id}" aria-label="${labels.discover} ${service.title}">${labels.discover} ${icon('arrow')}</button>
+      <h3>${escapeHtml(service.title)}</h3>
+      <p>${escapeHtml(service.summary)}</p>
+      <button class="text-link" type="button" data-service="${service.id}" aria-label="${labels.discover} ${escapeHtml(service.title)}">${labels.discover} ${icon('arrow')}</button>
     </div>
   </article>`).join('');
 document.querySelector('#footer-services').innerHTML = services.map(service =>
-  `<button class="text-link" type="button" data-service="${service.id}">${service.title}</button>`).join('');
+  `<button class="text-link" type="button" data-service="${service.id}">${escapeHtml(service.title)}</button>`).join('');
 document.querySelectorAll('[data-service]').forEach(button => {
   button.addEventListener('click', () => showService(services.find(service => service.id === button.dataset.service)));
 });
@@ -80,7 +104,7 @@ const projectPageSize = 10;
 let activeCategory = 'all';
 let projectLimit = projectPageSize;
 filters.innerHTML = [{ id: 'all', title: labels.all }, ...services].map(({ id, title }) =>
-  `<button type="button" data-filter="${id}" aria-pressed="${id === 'all'}">${title}</button>`).join('');
+  `<button type="button" data-filter="${id}" aria-pressed="${id === 'all'}">${escapeHtml(title)}</button>`).join('');
 projectGrid.innerHTML = gallery.map((project, index) => `
   <button type="button" class="project" data-category="${project.category}" data-project="${index}">
     <img src="${asset(project.image)}" alt="" loading="lazy" width="600" height="350">
@@ -158,7 +182,7 @@ dialog.addEventListener('click', event => {
   if (event.target === dialog) dialog.close();
 });
 
-const number = company.whatsappNumber.replace(/[\s+()-]/g, '');
+const number = (content.whatsappNumber ?? company.whatsappNumber).replace(/[\s+()-]/g, '');
 const hasNumber = /^[1-9]\d{7,14}$/.test(number);
 const whatsappUrl = message => 'https://wa.me/' + number + '?text=' + encodeURIComponent(message);
 
@@ -167,6 +191,7 @@ document.querySelectorAll('[data-whatsapp]').forEach(link => {
     link.href = whatsappUrl(labels.greeting);
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
+    link.addEventListener('click', () => track('whatsapp_open'));
   } else {
     link.addEventListener('click', () => {
       status.textContent = labels.setup;
@@ -225,6 +250,7 @@ form.addEventListener('submit', event => {
   }
 
   const url = whatsappUrl(message);
+  track('quote_open', service.id);
   window.open(url, '_blank', 'noopener,noreferrer');
   const retry = document.createElement('a');
   retry.href = url;
