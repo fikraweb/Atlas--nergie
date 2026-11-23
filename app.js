@@ -113,9 +113,44 @@ moreProjects.addEventListener('click', () => {
 projectGrid.addEventListener('click', event => {
   const button = event.target.closest('[data-project]');
   if (!button) return;
-  const project = gallery[Number(button.dataset.project)];
-  detailBody.innerHTML = `<img class="gallery-lightbox-image" src="${asset(project.image)}" alt="${project.title}">
-    <div class="dialog-content"><h2 id="detail-title">${project.title}</h2><p>${labels.example}</p></div>`;
+  const visibleProjects = [...projectGrid.querySelectorAll('.project:not([hidden])')];
+  let position = visibleProjects.indexOf(button);
+  detailBody.innerHTML = `
+    <img class="gallery-lightbox-image" alt="">
+    <div class="dialog-content">
+      <h2 id="detail-title"></h2><p>${labels.example}</p>
+      <div class="gallery-controls">
+        <button type="button" class="gallery-prev" aria-label="${labels.previousPhoto}">${icon('arrow')}</button>
+        <span class="gallery-position" aria-live="polite"></span>
+        <button type="button" class="gallery-next" aria-label="${labels.nextPhoto}">${icon('arrow')}</button>
+      </div>
+    </div>`;
+
+  const image = detailBody.querySelector('img');
+  const title = detailBody.querySelector('h2');
+  const counter = detailBody.querySelector('.gallery-position');
+  const previous = detailBody.querySelector('.gallery-prev');
+  const next = detailBody.querySelector('.gallery-next');
+  const formatNumber = new Intl.NumberFormat(arabic ? 'ar' : 'fr');
+  function displayPhoto() {
+    const project = gallery[Number(visibleProjects[position].dataset.project)];
+    image.src = asset(project.image);
+    image.alt = project.title;
+    title.textContent = project.title;
+    counter.textContent = formatNumber.format(position + 1) + ' / ' + formatNumber.format(visibleProjects.length);
+  }
+  function movePhoto(direction) {
+    position = (position + direction + visibleProjects.length) % visibleProjects.length;
+    displayPhoto();
+  }
+  previous.addEventListener('click', () => movePhoto(-1));
+  next.addEventListener('click', () => movePhoto(1));
+  detailBody.querySelector('.gallery-controls').addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    movePhoto((event.key === 'ArrowRight' ? 1 : -1) * (arabic ? -1 : 1));
+  });
+  displayPhoto();
   dialog.scrollTop = 0;
   dialog.showModal();
 });

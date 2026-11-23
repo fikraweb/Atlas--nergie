@@ -100,6 +100,8 @@ export const questions = [
 ];
 
 export const labels = {
+  previousPhoto: 'الصورة السابقة',
+  nextPhoto: 'الصورة التالية',
   moreProjects: 'عرض المزيد من الصور',
   solarExample: 'منظومة كهروضوئية على مبنى',
   benefits: 'المزايا',

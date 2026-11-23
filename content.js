@@ -98,6 +98,8 @@ export const questions = [
 ];
 
 export const labels = {
+  previousPhoto: 'Photo précédente',
+  nextPhoto: 'Photo suivante',
   moreProjects: 'Afficher plus de photos',
   solarExample: 'Champ photovoltaïque sur bâtiment',
   benefits: 'Les bénéfices',
