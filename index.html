@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,8 @@
   <title>Atlas Énergie — Solutions électriques, solaires et connectées</title>
   <link rel="icon" href="assets/logo-atlas.webp" type="image/webp">
   <link rel="preload" href="assets/hero.webp" as="image">
+  <link rel="alternate" hreflang="fr" href="./">
+  <link rel="alternate" hreflang="ar" href="ar.html">
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="app.js"></script>
 </head>
@@ -21,7 +23,10 @@
         <a class="active" href="#accueil">Accueil</a><a href="#services">Services</a><a href="#a-propos">À propos</a><a href="#realisations">Réalisations</a><a href="#contact">Contact</a>
         <a class="button primary mobile-quote" href="#contact">Demander un devis <span data-icon="arrow"></span></a>
       </nav>
-      <a class="button primary header-quote" href="#contact">Demander un devis <span data-icon="arrow"></span></a>
+      <div class="nav-actions">
+        <a class="language-link" href="ar.html" lang="ar" dir="rtl" hreflang="ar" aria-label="تصفح الموقع بالعربية">العربية</a>
+        <a class="button primary header-quote" href="#contact">Demander un devis <span data-icon="arrow"></span></a>
+      </div>
     </div>
   </header>
   <main id="contenu">
@@ -100,7 +105,7 @@
       <div><a class="brand" href="#accueil"><img src="assets/logo-atlas.webp" alt="Atlas Énergie" width="960" height="554"></a><p>Solutions électriques, solaires et connectées pour les particuliers, les entreprises et l’industrie.</p></div>
       <div><h3>Navigation</h3><a href="#services">Services</a><a href="#a-propos">À propos</a><a href="#realisations">Réalisations</a><a href="#contact">Contact</a></div>
       <div><h3>Nos services</h3><div id="footer-services"></div></div>
-      <div><h3>Contact</h3><p id="contact-phone">Téléphone à renseigner</p><p id="contact-email">E-mail à renseigner</p><p id="contact-address">Adresse à renseigner</p><a data-whatsapp href="#devis">WhatsApp <span id="whatsapp-number"></span></a></div>
+      <div><h3>Contact</h3><p id="contact-phone">Téléphone à renseigner</p><p id="contact-email">E-mail à renseigner</p><p id="contact-address">Adresse à renseigner</p><a data-whatsapp href="#devis">WhatsApp <span id="whatsapp-number" dir="ltr"></span></a></div>
     </div>
     <div class="wrap footer-bottom">© <span id="year">2026</span> Atlas Énergie. Tous droits réservés.</div>
   </footer>

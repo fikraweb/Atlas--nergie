@@ -1,6 +1,18 @@
 import { company } from './config.js';
-import { commitments, questions, services } from './content.js';
 import { icon } from './icons.js';
+
+const arabic = document.documentElement.lang === 'ar';
+const { commitments, labels, questions, services } = await (
+  arabic ? import('./content-ar.js') : import('./content.js')
+);
+
+const languageLink = document.querySelector('.language-link');
+const languageUrl = languageLink.href;
+function syncLanguageLink() {
+  languageLink.href = languageUrl + location.hash;
+}
+syncLanguageLink();
+window.addEventListener('hashchange', syncLanguageLink);
 
 const dialog = document.querySelector('#detail');
 const detailBody = document.querySelector('#detail-body');
@@ -14,7 +26,7 @@ const gallery = services.map(service => ({
   category: service.id,
   image: 'project-' + service.id,
   title: service.project,
-})).concat({ category: 'solar', image: 'solar', title: 'Champ photovoltaïque sur bâtiment' });
+})).concat({ category: 'solar', image: 'solar', title: labels.solarExample });
 
 function showService(service) {
   detailBody.innerHTML = `
@@ -22,12 +34,12 @@ function showService(service) {
     <div class="dialog-content">
       <h2 id="detail-title">${service.title}</h2>
       <p>${service.description}</p>
-      <h3>Les bénéfices</h3>${list(service.benefits)}
-      <h3>Installations et solutions</h3>${list(service.solutions)}
+      <h3>${labels.benefits}</h3>${list(service.benefits)}
+      <h3>${labels.solutions}</h3>${list(service.solutions)}
       ${service.photos ? `<div class="service-photos">${service.photos.map(({ image, caption }) => `
         <figure><img src="${asset(image)}" loading="lazy" alt="" width="550" height="380">
           <figcaption>${caption}</figcaption></figure>`).join('')}</div>` : ''}
-      <a class="button primary" href="#devis">Demander un devis pour ce service ${icon('arrow')}</a>
+      <a class="button primary" href="#devis">${labels.quote} ${icon('arrow')}</a>
     </div>`;
   detailBody.querySelector('a').addEventListener('click', event => {
     event.preventDefault();
@@ -48,7 +60,7 @@ document.querySelector('#service-grid').innerHTML = services.map(service => `
       <i class="icon-box">${icon(service.icon)}</i>
       <h3>${service.title}</h3>
       <p>${service.summary}</p>
-      <button class="text-link" type="button" data-service="${service.id}" aria-label="Découvrir le service ${service.title}">Découvrir le service ${icon('arrow')}</button>
+      <button class="text-link" type="button" data-service="${service.id}" aria-label="${labels.discover} ${service.title}">${labels.discover} ${icon('arrow')}</button>
     </div>
   </article>`).join('');
 document.querySelector('#footer-services').innerHTML = services.map(service =>
@@ -65,7 +77,7 @@ document.querySelector('#faq-list').innerHTML = questions.map(([question, answer
 
 const filters = document.querySelector('#filters');
 const projectGrid = document.querySelector('#project-grid');
-filters.innerHTML = [{ id: 'all', title: 'Tous' }, ...services].map(({ id, title }) =>
+filters.innerHTML = [{ id: 'all', title: labels.all }, ...services].map(({ id, title }) =>
   `<button type="button" data-filter="${id}" aria-pressed="${id === 'all'}">${title}</button>`).join('');
 projectGrid.innerHTML = gallery.map((project, index) => `
   <button type="button" class="project" data-category="${project.category}" data-project="${index}">
@@ -85,7 +97,7 @@ projectGrid.addEventListener('click', event => {
   if (!button) return;
   const project = gallery[Number(button.dataset.project)];
   detailBody.innerHTML = `<img class="dialog-image" src="${asset(project.image)}" alt="${project.title}">
-    <div class="dialog-content"><h2 id="detail-title">${project.title}</h2><p>Exemple illustratif.</p></div>`;
+    <div class="dialog-content"><h2 id="detail-title">${project.title}</h2><p>${labels.example}</p></div>`;
   dialog.scrollTop = 0;
   dialog.showModal();
 });
@@ -103,12 +115,12 @@ if (hasNumber) {
 
 document.querySelectorAll('[data-whatsapp]').forEach(link => {
   if (hasNumber) {
-    link.href = whatsappUrl('Bonjour Atlas Énergie, je souhaite échanger au sujet de mon projet.');
+    link.href = whatsappUrl(labels.greeting);
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
   } else {
     link.addEventListener('click', () => {
-      status.textContent = 'Le numéro WhatsApp d’Atlas Énergie est en cours de configuration. Vous pouvez préparer votre demande depuis ce formulaire.';
+      status.textContent = labels.setup;
     });
   }
 });
@@ -117,10 +129,13 @@ form.addEventListener('input', event => event.target.setCustomValidity(''));
 form.addEventListener('submit', event => {
   event.preventDefault();
   const fields = Object.fromEntries([...new FormData(form)].map(([key, value]) => [key, value.trim()]));
+  fields.phone = fields.phone
+    .replace(/[٠-٩]/g, digit => String(digit.charCodeAt(0) - 0x660))
+    .replace(/[۰-۹]/g, digit => String(digit.charCodeAt(0) - 0x6f0));
   for (const [key, value] of Object.entries(fields)) {
     const validPhone = key !== 'phone' || value.replace(/\D/g, '').length >= 7;
     if (!value || !validPhone) {
-      form.elements[key].setCustomValidity(validPhone ? 'Veuillez renseigner ce champ.' : 'Veuillez saisir un numéro de téléphone valide.');
+      form.elements[key].setCustomValidity(validPhone ? labels.required : labels.invalidPhone);
       form.elements[key].reportValidity();
       return;
     }
@@ -128,30 +143,30 @@ form.addEventListener('submit', event => {
 
   const service = services.find(item => item.id === fields.service);
   const message = [
-    'Bonjour Atlas Énergie,', '',
-    'Je souhaite demander un devis pour le projet suivant.', '',
-    'Nom complet : ' + fields.name,
-    'Téléphone : ' + fields.phone,
-    'Ville : ' + fields.city,
-    'Service souhaité : ' + service.title, '',
-    'Description du besoin :', fields.description, '', 'Merci !',
+    labels.quoteGreeting, '',
+    labels.quoteIntro, '',
+    labels.name + ' ' + fields.name,
+    labels.phone + ' ' + fields.phone,
+    labels.city + ' ' + fields.city,
+    labels.service + ' ' + service.title, '',
+    labels.description, fields.description, '', labels.thanks,
   ].join('\n');
 
   if (!hasNumber) {
-    status.textContent = 'Aucun numéro WhatsApp n’est configuré. Votre demande n’a pas été transmise. ';
+    status.textContent = labels.unsent;
     const copy = document.createElement('button');
     copy.type = 'button';
     copy.className = 'text-link';
-    copy.textContent = 'Copier ma demande';
+    copy.textContent = labels.copy;
     copy.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(message);
-        copy.textContent = 'Demande copiée';
+        copy.textContent = labels.copied;
       } catch {
         const draft = document.createElement('textarea');
         draft.value = message;
         draft.readOnly = true;
-        draft.setAttribute('aria-label', 'Votre demande à copier');
+        draft.setAttribute('aria-label', labels.copyDraft);
         copy.replaceWith(draft);
         draft.select();
       }
@@ -166,8 +181,8 @@ form.addEventListener('submit', event => {
   retry.href = url;
   retry.target = '_blank';
   retry.rel = 'noopener noreferrer';
-  retry.textContent = 'Ouvrir la demande dans WhatsApp';
-  status.replaceChildren('Vérifiez votre message dans WhatsApp, puis envoyez-le. ', retry);
+  retry.textContent = labels.openWhatsApp;
+  status.replaceChildren(labels.review, retry);
 });
 
 for (const field of ['phone', 'email', 'address']) {
@@ -179,7 +194,7 @@ const nav = document.querySelector('#navigation');
 function setMenu(open) {
   nav.classList.toggle('open', open);
   menu.setAttribute('aria-expanded', open);
-  menu.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+  menu.setAttribute('aria-label', open ? labels.closeMenu : labels.openMenu);
   menu.innerHTML = icon(open ? 'close' : 'menu');
 }
 
