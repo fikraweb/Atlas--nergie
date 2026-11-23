@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Atlas Énergie accompagne particuliers, entreprises et industriels dans leurs projets solaires, électriques, de vidéosurveillance et de domotique.">
+  <meta name="theme-color" content="#101c30">
+  <title>Atlas Énergie — Solutions électriques, solaires et connectées</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/hero.webp" as="image">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#contenu">Aller au contenu</a>
+  <header class="header">
+    <div class="wrap nav-wrap">
+      <a class="brand" href="#accueil" aria-label="Atlas Énergie, accueil"><img src="assets/mark.svg" alt="" width="43" height="43"><span>ATLAS<span>ÉNERGIE</span></span></a>
+      <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navigation" data-icon="menu"></button>
+      <nav id="navigation" aria-label="Navigation principale">
+        <a class="active" href="#accueil">Accueil</a><a href="#services">Services</a><a href="#a-propos">À propos</a><a href="#realisations">Réalisations</a><a href="#contact">Contact</a>
+        <a class="button primary mobile-quote" href="#contact">Demander un devis <span data-icon="arrow"></span></a>
+      </nav>
+      <a class="button primary header-quote" href="#contact">Demander un devis <span data-icon="arrow"></span></a>
+    </div>
+  </header>
+  <main id="contenu">
+    <section class="hero" id="accueil" aria-labelledby="hero-title">
+      <div class="wrap hero-inner">
+        <div class="eyebrow hero-label"><span></span> SOLUTIONS ÉNERGÉTIQUES & TECHNOLOGIQUES</div>
+        <h1 id="hero-title">L’énergie au service<br class="desktop-break"> de <em>vos ambitions.</em></h1>
+        <p>Du solaire à la domotique, Atlas Énergie conçoit des installations performantes, sûres et adaptées à votre quotidien professionnel ou résidentiel.</p>
+        <div class="actions"><a class="button primary" href="#services">Découvrir nos services <span data-icon="arrow"></span></a><a class="button outline" href="#contact">Demander un devis <span data-icon="diagonal"></span></a></div>
+      </div>
+    </section>
+    <div class="trust">
+      <div class="wrap trust-grid">
+        <div><i data-icon="shield"></i><span><strong>Sécurité avant tout</strong><small>Des installations pensées pour durer</small></span></div>
+        <div><i data-icon="bolt"></i><span><strong>Expertise technique</strong><small>Des solutions adaptées à chaque site</small></span></div>
+        <div><i data-icon="users"></i><span><strong>Accompagnement dédié</strong><small>De l’étude à la mise en service</small></span></div>
+      </div>
+    </div>
+    <section class="section services" id="services">
+      <div class="wrap">
+        <div class="section-heading split"><div><div class="eyebrow"><span></span> NOS SERVICES</div><h2>Notre expertise à votre service<span class="accent">.</span></h2></div><p>Cinq expertises complémentaires pour des bâtiments plus performants, plus sûrs et mieux connectés.</p></div>
+        <div id="service-grid" class="service-grid"></div>
+      </div>
+    </section>
+    <section class="section about" id="a-propos">
+      <div class="wrap about-grid">
+        <div class="about-image"><img src="assets/team.webp" alt="Deux techniciens consultent des plans dans une installation électrique" loading="lazy" width="760" height="500"></div>
+        <div><div class="eyebrow"><span></span> ATLAS ÉNERGIE</div><h2>À propos de nous<span class="accent">.</span></h2>
+          <p>Atlas Énergie accompagne les particuliers, les entreprises et les sites industriels dans leurs projets électriques, solaires et connectés.</p>
+          <p>Nous prenons le temps de comprendre votre bâtiment, vos usages et vos contraintes. De la conception à la mise en service, nous privilégions la qualité des équipements, la sécurité de l’installation et votre satisfaction.</p>
+          <a class="text-link" href="#contact">Parlons de votre projet <span data-icon="arrow"></span></a>
+        </div>
+      </div>
+    </section>
+    <section class="section why">
+      <div class="wrap"><div class="section-heading"><div class="eyebrow"><span></span> NOS ENGAGEMENTS</div><h2>Pourquoi nous choisir ?</h2></div>
+        <div class="why-grid" id="why-grid"></div>
+      </div>
+    </section>
+    <section class="section projects" id="realisations">
+      <div class="wrap">
+        <div class="section-heading split"><div><div class="eyebrow"><span></span> RÉALISATIONS</div><h2>Des installations en images<span class="accent">.</span></h2></div><p>Des exemples illustratifs pour vous aider à imaginer votre projet.</p></div>
+        <div class="filters" id="filters" aria-label="Filtrer les exemples"></div>
+        <div class="project-grid" id="project-grid"></div>
+      </div>
+    </section>
+    <section class="section faq" id="faq">
+      <div class="wrap faq-grid">
+        <div><div class="eyebrow"><span></span> QUESTIONS FRÉQUENTES</div><h2>Vos questions<span class="accent">.</span></h2><p>Les réponses aux questions les plus courantes avant de lancer votre projet.</p></div>
+        <div id="faq-list" class="faq-list"></div>
+      </div>
+    </section>
+    <section class="section contact" id="contact">
+      <div class="wrap contact-grid">
+        <div><div class="eyebrow"><span></span> CONTACT & DEVIS</div><h2>Parlons de<br> votre projet<span class="accent">.</span></h2><p>Décrivez votre besoin. Nous pourrons préciser ensemble les équipements, les contraintes du site et les prochaines étapes.</p>
+          <a class="button outline" data-whatsapp href="#devis"><span data-icon="whatsapp"></span> Écrire sur WhatsApp</a>
+        </div>
+        <form id="devis" class="quote-form">
+          <h3>Demander un devis</h3>
+          <div class="form-grid">
+            <label>Nom complet <input name="name" autocomplete="name" placeholder="Votre nom" required maxlength="100"></label>
+            <label>Téléphone <input name="phone" type="tel" autocomplete="tel" placeholder="Votre numéro" pattern="[+0-9 \(\)\-.]{7,25}" required></label>
+            <label>Ville <input name="city" autocomplete="address-level2" placeholder="Votre ville" required maxlength="100"></label>
+            <label>Service souhaité <select name="service" required><option value="">Sélectionner un service</option></select></label>
+            <label class="full">Description du besoin <textarea name="description" rows="4" placeholder="Les détails de votre projet…" required maxlength="1500"></textarea></label>
+          </div>
+          <button type="submit" class="button primary">Envoyer ma demande <span data-icon="arrow"></span></button>
+          <p class="form-note">Votre demande est préparée dans WhatsApp, où vous pouvez la relire avant de l’envoyer.</p>
+          <p class="form-status" id="form-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap footer-grid">
+      <div><a class="brand" href="#accueil"><img src="assets/mark.svg" alt="" width="43" height="43"><span>ATLAS<span>ÉNERGIE</span></span></a><p>Solutions électriques, solaires et connectées pour les particuliers, les entreprises et l’industrie.</p></div>
+      <div><h3>Navigation</h3><a href="#services">Services</a><a href="#a-propos">À propos</a><a href="#realisations">Réalisations</a><a href="#contact">Contact</a></div>
+      <div><h3>Nos services</h3><div id="footer-services"></div></div>
+      <div><h3>Contact</h3><p id="contact-phone">Téléphone à renseigner</p><p id="contact-email">E-mail à renseigner</p><p id="contact-address">Adresse à renseigner</p><a data-whatsapp href="#devis">WhatsApp</a></div>
+    </div>
+    <div class="wrap footer-bottom">© <span id="year">2026</span> Atlas Énergie. Tous droits réservés.</div>
+  </footer>
+  <a class="floating" data-whatsapp href="#devis" aria-label="Contacter Atlas Énergie sur WhatsApp"><span data-icon="whatsapp"></span></a>
+  <dialog id="detail" aria-labelledby="detail-title"><div id="detail-body"></div><form method="dialog"><button class="dialog-close" aria-label="Fermer" data-icon="close" autofocus></button></form></dialog>
+</body>
+</html>

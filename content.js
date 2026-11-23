@@ -1,0 +1,64 @@
+export const services = [
+  {
+    id: 'solar', icon: 'sun', title: 'Énergie solaire', image: 'solar-roof',
+    alt: 'Panneaux photovoltaïques installés sur le toit d’un bâtiment moderne',
+    summary: 'Produisez votre propre électricité grâce à une installation photovoltaïque dimensionnée pour vos usages.',
+    description: 'Nous étudions votre consommation, l’orientation, l’ombrage et les surfaces disponibles pour dimensionner une installation photovoltaïque adaptée à votre bâtiment.',
+    benefits: ['Produire de l’électricité sur place', 'Réduire la part d’électricité achetée selon votre consommation', 'Suivre la production de votre installation'],
+    solutions: ['Panneaux photovoltaïques en toiture', 'Onduleurs et protections électriques', 'Suivi de production et configuration pour l’autoconsommation'],
+    project: 'Toiture photovoltaïque',
+  },
+  {
+    id: 'cctv', icon: 'camera', title: 'Caméras de surveillance', image: 'cctv',
+    alt: 'Caméra de surveillance fixée à la façade d’un bâtiment',
+    summary: 'Gardez un œil sur votre bâtiment avec des caméras et des systèmes d’enregistrement adaptés au site.',
+    description: 'Nous définissons les zones à couvrir, les angles de prise de vue et les besoins de stockage pour vous proposer un système de vidéosurveillance facile à utiliser.',
+    benefits: ['Visualiser les zones sensibles', 'Consulter les enregistrements selon vos droits d’accès', 'Adapter les équipements à la luminosité et à l’environnement'],
+    solutions: ['Caméras intérieures et extérieures', 'Enregistrement local et stockage', 'Accès distant sécurisé selon les équipements'],
+    project: 'Surveillance des accès extérieurs',
+  },
+  {
+    id: 'industrial', icon: 'bolt', title: 'Électricité industrielle', image: 'industrial',
+    alt: 'Armoire électrique industrielle avec disjoncteurs et câblage organisé',
+    summary: 'Structurez et sécurisez l’alimentation de vos équipements et de vos espaces de production.',
+    description: 'Nous prenons en compte les équipements, les contraintes du site et l’organisation de la production pour préparer une installation électrique adaptée à vos opérations.',
+    benefits: ['Dimensionner la distribution pour vos équipements', 'Faciliter l’identification des circuits', 'Organiser les interventions autour des contraintes du site'],
+    solutions: ['Armoires et tableaux de distribution', 'Câblage et protections', 'Alimentation électrique des équipements'],
+    project: 'Distribution électrique industrielle',
+  },
+  {
+    id: 'residential', icon: 'home', title: 'Électricité résidentielle', image: 'residential',
+    alt: 'Électricien au travail dans un logement moderne',
+    summary: 'Installez, rénovez ou entretenez les circuits électriques de votre logement.',
+    description: 'Pour une construction ou une rénovation, nous étudions les besoins de chaque pièce et les caractéristiques de votre installation pour définir les circuits et les protections adaptés.',
+    benefits: ['Adapter les prises et points lumineux à vos usages', 'Moderniser le tableau et les protections', 'Faciliter l’entretien des circuits'],
+    solutions: ['Tableaux électriques et protections', 'Circuits, prises et éclairage', 'Entretien et rénovation de l’installation'],
+    project: 'Tableau électrique résidentiel',
+  },
+  {
+    id: 'smart', icon: 'controls', title: 'Domotique', image: 'smart',
+    alt: 'Séjour contemporain avec éclairage intégré et stores automatisés',
+    summary: 'Pilotez l’éclairage, les volets et les équipements connectés depuis des commandes adaptées à votre quotidien.',
+    description: 'Nous définissons avec vous les commandes, les scénarios et les automatismes les plus utiles, en tenant compte de la compatibilité avec les équipements du logement.',
+    benefits: ['Regrouper les commandes du logement', 'Automatiser les gestes répétitifs', 'Adapter l’éclairage et les volets à votre rythme'],
+    solutions: ['Éclairage intelligent et scénarios', 'Volets et stores automatisés', 'Commandes murales et pilotage connecté'],
+    project: 'Éclairage et stores connectés',
+  },
+];
+
+export const commitments = [
+  ['controls', 'Solutions adaptées à vos besoins', 'Une installation dimensionnée selon votre site, vos équipements et vos usages.'],
+  ['check', 'Qualité et fiabilité', 'Des équipements choisis en fonction des contraintes réelles du projet.'],
+  ['bolt', 'Expertise technique', 'Une étude des circuits et des équipements avant chaque installation.'],
+  ['users', 'Accompagnement personnalisé', 'Un échange à chaque étape, de la définition du besoin à la prise en main.'],
+  ['shield', 'Respect des exigences de sécurité', 'Des protections et des vérifications adaptées à votre installation.'],
+  ['check', 'Satisfaction client', 'Une mise en service expliquée pour vous aider à utiliser votre installation.'],
+];
+
+export const questions = [
+  ['Comment dimensionner une installation solaire ?', 'Le dimensionnement dépend de votre consommation, de la surface disponible, de son orientation et des zones d’ombre. Ces éléments permettent d’estimer la production et de choisir les équipements.'],
+  ['Puis-je consulter mes caméras à distance ?', 'Oui, si les équipements et votre connexion le permettent. Les modalités d’accès et les droits de chaque utilisateur sont définis à la mise en service.'],
+  ['Intervenez-vous sur une installation électrique existante ?', 'Oui. Un examen de l’installation permet d’identifier les éléments à conserver, les protections à vérifier et les modifications à prévoir.'],
+  ['Peut-on ajouter la domotique à un logement existant ?', 'Oui, selon le câblage et les équipements en place. Il est possible de commencer par l’éclairage ou les volets, puis d’étendre l’installation.'],
+  ['Comment obtenir un devis et planifier les travaux ?', 'Indiquez votre ville, le service souhaité et les caractéristiques du site dans le formulaire. Une visite peut être nécessaire pour préciser le périmètre, le prix et les délais.'],
+];
