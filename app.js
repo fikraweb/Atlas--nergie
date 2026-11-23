@@ -18,12 +18,15 @@ const gallery = services.map(service => ({
 
 function showService(service) {
   detailBody.innerHTML = `
-    <img class="dialog-image" src="${asset(service.image)}" alt="${service.alt}">
+    <img class="dialog-image" data-service-image="${service.id}" src="${asset(service.image)}" alt="${service.alt}">
     <div class="dialog-content">
       <h2 id="detail-title">${service.title}</h2>
       <p>${service.description}</p>
       <h3>Les bénéfices</h3>${list(service.benefits)}
       <h3>Installations et solutions</h3>${list(service.solutions)}
+      ${service.photos ? `<div class="service-photos">${service.photos.map(({ image, caption }) => `
+        <figure><img src="${asset(image)}" loading="lazy" alt="" width="550" height="380">
+          <figcaption>${caption}</figcaption></figure>`).join('')}</div>` : ''}
       <a class="button primary" href="#devis">Demander un devis pour ce service ${icon('arrow')}</a>
     </div>`;
   detailBody.querySelector('a').addEventListener('click', event => {

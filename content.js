@@ -9,8 +9,8 @@ export const services = [
     project: 'Toiture photovoltaïque',
   },
   {
-    id: 'cctv', icon: 'camera', title: 'Caméras de surveillance', image: 'cctv',
-    alt: 'Caméra de surveillance fixée à la façade d’un bâtiment',
+    id: 'cctv', icon: 'camera', title: 'Caméras de surveillance', image: 'service-cctv',
+    alt: 'Caméra de vidéosurveillance extérieure en gros plan',
     summary: 'Gardez un œil sur votre bâtiment avec des caméras et des systèmes d’enregistrement adaptés au site.',
     description: 'Nous définissons les zones à couvrir, les angles de prise de vue et les besoins de stockage pour vous proposer un système de vidéosurveillance facile à utiliser.',
     benefits: ['Visualiser les zones sensibles', 'Consulter les enregistrements selon vos droits d’accès', 'Adapter les équipements à la luminosité et à l’environnement'],
@@ -18,12 +18,15 @@ export const services = [
     project: 'Surveillance des accès extérieurs',
   },
   {
-    id: 'industrial', icon: 'bolt', title: 'Électricité industrielle', image: 'industrial',
-    alt: 'Armoire électrique industrielle avec disjoncteurs et câblage organisé',
+    id: 'industrial', icon: 'bolt', title: 'Électricité industrielle', image: 'service-industrial',
+    alt: 'Technicien utilisant un appareil de mesure dans une armoire électrique industrielle',
     summary: 'Structurez et sécurisez l’alimentation de vos équipements et de vos espaces de production.',
     description: 'Nous prenons en compte les équipements, les contraintes du site et l’organisation de la production pour préparer une installation électrique adaptée à vos opérations.',
     benefits: ['Dimensionner la distribution pour vos équipements', 'Faciliter l’identification des circuits', 'Organiser les interventions autour des contraintes du site'],
     solutions: ['Armoires et tableaux de distribution', 'Câblage et protections', 'Alimentation électrique des équipements'],
+    photos: [
+      { image: 'service-equipment', caption: 'Équipements alimentés sur une ligne de production' },
+    ],
     project: 'Distribution électrique industrielle',
   },
   {
@@ -36,12 +39,16 @@ export const services = [
     project: 'Tableau électrique résidentiel',
   },
   {
-    id: 'smart', icon: 'controls', title: 'Domotique', image: 'smart',
-    alt: 'Séjour contemporain avec éclairage intégré et stores automatisés',
+    id: 'smart', icon: 'controls', title: 'Domotique', image: 'service-smart',
+    alt: 'Vue illustrative d’un logement connecté piloté depuis un téléphone',
     summary: 'Pilotez l’éclairage, les volets et les équipements connectés depuis des commandes adaptées à votre quotidien.',
     description: 'Nous définissons avec vous les commandes, les scénarios et les automatismes les plus utiles, en tenant compte de la compatibilité avec les équipements du logement.',
     benefits: ['Regrouper les commandes du logement', 'Automatiser les gestes répétitifs', 'Adapter l’éclairage et les volets à votre rythme'],
     solutions: ['Éclairage intelligent et scénarios', 'Volets et stores automatisés', 'Commandes murales et pilotage connecté'],
+    photos: [
+      { image: 'service-gate', caption: 'Portail pouvant être intégré à une commande d’accès compatible' },
+      { image: 'service-remote', caption: 'Exemple de commande d’un équipement du logement' },
+    ],
     project: 'Éclairage et stores connectés',
   },
 ];
