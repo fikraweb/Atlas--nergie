@@ -1,3 +1,4 @@
+import { setMessage } from './i18n.js';
 import { mediaUrl } from '../media.js';
 import { serviceGallery } from '../gallery.js';
 
@@ -54,9 +55,15 @@ export function setupPhotos({ request, currentDraft, serviceSelect, defaults, la
 
   function render(selected = '-1') {
     const list = photosFor('fr', currentDraft());
-    select.replaceChildren(new Option('Photo principale de la fiche', '-1'),
+    const cover = new Option('', '-1');
+    setMessage(cover, 'Photo principale de la fiche');
+    select.replaceChildren(cover,
       ...list.map((photo, index) => new Option((index + 1) + ' · ' + photo.title, index)));
-    if (list.length < 20) select.add(new Option('Ajouter une photo à la galerie', list.length));
+    if (list.length < 20) {
+      const add = new Option('', list.length);
+      setMessage(add, 'Ajouter une photo à la galerie');
+      select.add(add);
+    }
     select.value = selected;
     showSlot();
   }
@@ -72,11 +79,11 @@ export function setupPhotos({ request, currentDraft, serviceSelect, defaults, la
     const existing = draft.media[service]?.gallery[position];
     const button = form.querySelector('button');
     if ((!file && !existing) || (position !== -1 && (!fr || !ar))) {
-      notice.textContent = 'Choisissez une photo et renseignez les légendes pour la galerie.';
+      setMessage(notice, 'Choisissez une photo et renseignez les légendes pour la galerie.');
       return;
     }
     button.disabled = true;
-    notice.textContent = 'Préparation…';
+    setMessage(notice, 'Préparation…');
     try {
       const image = file
         ? (await request('', { method: 'POST', body: await optimize(file), contentType: 'image/webp' }, '/api/media')).id
@@ -89,9 +96,9 @@ export function setupPhotos({ request, currentDraft, serviceSelect, defaults, la
         media.gallery[position] = { image, fr, ar };
       }
       if (service === serviceSelect.value) render(String(position));
-      notice.textContent = 'Photo préparée. Cliquez sur « Publier les modifications » pour la mettre en ligne.';
+      setMessage(notice, 'Photo préparée. Cliquez sur « Publier les modifications » pour la mettre en ligne.');
     } catch (error) {
-      notice.textContent = error.message;
+      setMessage(notice, error.message);
     } finally {
       button.disabled = false;
     }

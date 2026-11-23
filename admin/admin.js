@@ -1,3 +1,4 @@
+import { applyLanguage, language, locale, prepareTranslations, setMessage, t } from './i18n.js';
 import { icon } from '../icons.js';
 import { setupPhotos } from './photos.js';
 import { setupQuotes } from './quotes.js';
@@ -16,7 +17,7 @@ const editor = $('#editor');
 const serviceSelect = $('#edit-service');
 const languageSelect = $('#edit-language');
 const periodSelect = $('#period');
-const formatting = new Intl.NumberFormat('fr-MA');
+const languageButton = $('#interface-language');
 const defaults = { fr, ar };
 const fields = ['title', 'summary', 'description', 'benefits', 'solutions'];
 const metrics = [
@@ -27,6 +28,8 @@ const metrics = [
 ];
 let token = '';
 let draft;
+let latestStats;
+let lastPublished;
 
 function append(parent, tag, text, className) {
   const element = document.createElement(tag);
@@ -55,13 +58,13 @@ function logout() {
   editor.reset();
   quotes.clear();
   $('#photo-form').reset();
-  $('#photo-status').textContent = '';
+  setMessage($('#photo-status'), '');
   dashboard.hidden = true;
   setDashboardMenu(false);
   $('#logout').hidden = true;
   login.hidden = false;
-  $('#login-status').textContent = '';
-  $('#publish-status').textContent = '';
+  setMessage($('#login-status'), '');
+  setMessage($('#publish-status'), '');
   $('#login-form').elements.token.focus();
 }
 
@@ -69,7 +72,7 @@ function serviceFor(lang, id) {
   return { ...defaults[lang].find(service => service.id === id), ...draft?.services[lang]?.[id] };
 }
 
-const quotes = setupQuotes(request, (lang, id) => serviceFor(lang, id).title || id);
+const quotes = setupQuotes(request, id => serviceFor(language(), id).title || id);
 const renderPhotos = setupPhotos({
   request, currentDraft: () => draft, serviceSelect, defaults,
   labels: { fr: frenchLabels, ar: arabicLabels },
@@ -118,11 +121,12 @@ window.addEventListener('hashchange', () => {
 });
 
 function showPublished(updatedAt) {
+  lastPublished = updatedAt;
   $('#published-at').textContent = updatedAt
-    ? 'Dernière publication : ' + new Intl.DateTimeFormat('fr-MA', {
+    ? t('Dernière publication :') + ' ' + new Intl.DateTimeFormat(locale(), {
       dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Casablanca',
     }).format(new Date(updatedAt.replace(' ', 'T') + 'Z'))
-    : 'Contenu initial du site.';
+    : t('Contenu initial du site.');
 }
 
 function loadService() {
@@ -153,7 +157,11 @@ function updateDraft() {
   );
 }
 
-function renderStats({ stats, start, end }) {
+function renderStats(data) {
+  latestStats = data;
+  const { stats, start, end } = data;
+  const formatting = new Intl.NumberFormat(locale());
+  const dayFormat = new Intl.DateTimeFormat(locale(), { dateStyle: 'short', timeZone: 'UTC' });
   const totals = Object.fromEntries(metrics.map(([kind]) => [kind, 0]));
   const languages = { fr: 0, ar: 0 };
   const perService = Object.fromEntries(fr.map(({ id }) => [id, { service_open: 0, quote_open: 0 }]));
@@ -176,14 +184,14 @@ function renderStats({ stats, start, end }) {
   cards.replaceChildren();
   for (const [kind, title] of metrics) {
     const card = append(cards, 'div', null, 'metric');
-    append(card, 'span', title);
+    append(card, 'span', t(title));
     append(card, 'strong', formatting.format(totals[kind]));
   }
   const chart = $('#timeline');
   const dailyList = $('#daily-list');
-  const humanDate = day => day.split('-').reverse().join('/');
+  const humanDate = day => dayFormat.format(new Date(day + 'T00:00:00Z'));
   $('#date-range').textContent = humanDate(start) + ' – ' + humanDate(end);
-  chart.setAttribute('aria-label', 'Vues quotidiennes. Total : ' + formatting.format(totals.page_view));
+  chart.setAttribute('aria-label', t('Vues quotidiennes. Total :') + ' ' + formatting.format(totals.page_view));
   chart.replaceChildren();
   dailyList.replaceChildren();
   const maximum = Math.max(1, ...daily.values());
@@ -199,19 +207,19 @@ function renderStats({ stats, start, end }) {
   languageStats.replaceChildren();
   for (const [language, title] of [['fr', 'Français'], ['ar', 'Arabe']]) {
     const row = append(languageStats, 'div', null, 'lang-stat');
-    append(row, 'span', title);
+    append(row, 'span', t(title));
     append(row, 'strong', formatting.format(languages[language]));
     const progress = append(row, 'progress');
     progress.max = totals.page_view || 1;
     progress.value = languages[language];
-    progress.setAttribute('aria-label', 'Vues en ' + title.toLowerCase());
+    progress.setAttribute('aria-label', t('Vues en ' + title.toLowerCase()));
   }
 
   const table = $('#services-stats');
   table.replaceChildren();
   for (const service of fr) {
     const row = append(table, 'tr');
-    append(row, 'th', draft.services.fr?.[service.id]?.title ?? service.title).scope = 'row';
+    append(row, 'th', serviceFor(language(), service.id).title).scope = 'row';
     append(row, 'td', formatting.format(perService[service.id].service_open));
     append(row, 'td', formatting.format(perService[service.id].quote_open));
   }
@@ -221,15 +229,15 @@ async function refresh() {
   const status = $('#stats-status');
   const refreshButton = $('#refresh');
   refreshButton.disabled = periodSelect.disabled = true;
-  status.textContent = 'Actualisation…';
+  setMessage(status, 'Actualisation…');
   try {
     const data = await request('?days=' + periodSelect.value);
     if (!dashboard.hidden) {
       renderStats(data);
-      status.textContent = '';
+      setMessage(status, '');
     }
   } catch (error) {
-    status.textContent = error.message;
+    setMessage(status, error.message);
   } finally {
     refreshButton.disabled = periodSelect.disabled = false;
   }
@@ -260,10 +268,10 @@ $('#login-form').addEventListener('submit', async event => {
     dashboard.hidden = false;
     $('#logout').hidden = false;
     showDashboardView(true);
-    status.textContent = '';
+    setMessage(status, '');
   } catch (error) {
     token = '';
-    status.textContent = error.message;
+    setMessage(status, error.message);
   } finally {
     button.disabled = false;
   }
@@ -283,20 +291,50 @@ editor.addEventListener('submit', async event => {
   const status = $('#publish-status');
   const button = editor.querySelector('button');
   button.disabled = true;
-  status.textContent = 'Publication…';
+  setMessage(status, 'Publication…');
   draft.whatsappNumber = editor.elements.whatsappNumber.value.trim();
   try {
     const data = await request('', { method: 'PUT', body: JSON.stringify(draft) });
     if (draft) {
       draft.revision = data.revision;
       showPublished(data.updatedAt);
-      $('#photo-status').textContent = '';
-      status.textContent = 'Modifications publiées.';
+      setMessage($('#photo-status'), '');
+      setMessage(status, 'Modifications publiées.');
       refresh();
     }
   } catch (error) {
-    status.textContent = error.message;
+    setMessage(status, error.message);
   } finally {
     button.disabled = false;
+  }
+});
+
+prepareTranslations();
+function switchLanguage(code) {
+  applyLanguage(code);
+  const target = code === 'ar' ? 'fr' : 'ar';
+  languageButton.lang = target;
+  languageButton.dir = target === 'ar' ? 'rtl' : 'ltr';
+  languageButton.textContent = target === 'ar' ? 'العربية' : 'Français';
+  if (!dashboard.hidden) {
+    if (latestStats) renderStats(latestStats);
+    showPublished(lastPublished);
+    quotes.localize();
+  }
+}
+
+const preference = 'atlas-admin-language';
+try {
+  switchLanguage(localStorage.getItem(preference) === 'ar' ? 'ar' : 'fr');
+} catch {
+  switchLanguage('fr');
+}
+languageButton.addEventListener('click', () => {
+  const code = language() === 'ar' ? 'fr' : 'ar';
+  switchLanguage(code);
+  try {
+    localStorage.setItem(preference, code);
+  } catch {
+    // Language switching still works when browser storage is unavailable.
   }
 });

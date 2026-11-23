@@ -1,7 +1,5 @@
+import { locale, setMessage } from './i18n.js';
 const statuses = { new: 'Nouvelle', contacted: 'Contactée', closed: 'Clôturée' };
-const dateFormat = new Intl.DateTimeFormat('fr-MA', {
-  dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Casablanca',
-});
 
 export function setupQuotes(request, serviceTitle) {
   const list = document.querySelector('#quote-list');
@@ -12,6 +10,17 @@ export function setupQuotes(request, serviceTitle) {
   let next = null;
   let requestVersion = 0;
 
+  function formatMeta(meta) {
+    const dateFormat = new Intl.DateTimeFormat(locale(), {
+      dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Casablanca',
+    });
+    const { createdAt, service, city, language } = meta.dataset;
+    meta.textContent = [
+      dateFormat.format(new Date(createdAt.replace(' ', 'T') + 'Z')),
+      serviceTitle(service), city, language.toUpperCase(),
+    ].join(' · ');
+  }
+
   function render(quote) {
     const article = document.createElement('article');
     article.className = 'quote-entry';
@@ -19,10 +28,10 @@ export function setupQuotes(request, serviceTitle) {
     heading.textContent = quote.name;
     const meta = document.createElement('p');
     meta.className = 'sub';
-    meta.textContent = [
-      dateFormat.format(new Date(quote.created_at.replace(' ', 'T') + 'Z')),
-      serviceTitle(quote.language, quote.service), quote.city, quote.language.toUpperCase(),
-    ].join(' · ');
+    Object.assign(meta.dataset, {
+      createdAt: quote.created_at, service: quote.service, city: quote.city, language: quote.language,
+    });
+    formatMeta(meta);
     const description = document.createElement('p');
     description.className = 'quote-description';
     description.dir = 'auto';
@@ -31,9 +40,15 @@ export function setupQuotes(request, serviceTitle) {
     phone.href = 'tel:' + quote.phone.replace(/[^+0-9]/g, '');
     phone.textContent = quote.phone;
     const label = document.createElement('label');
-    label.textContent = 'Suivi';
+    const labelText = document.createElement('span');
+    setMessage(labelText, 'Suivi');
+    label.append(labelText);
     const select = document.createElement('select');
-    select.replaceChildren(...Object.entries(statuses).map(([value, text]) => new Option(text, value)));
+    for (const [value, text] of Object.entries(statuses)) {
+      const option = new Option('', value);
+      setMessage(option, text);
+      select.add(option);
+    }
     select.value = quote.status;
     select.addEventListener('change', async () => {
       select.disabled = true;
@@ -43,7 +58,7 @@ export function setupQuotes(request, serviceTitle) {
         if (filter.value !== 'all') await load();
       } catch (error) {
         select.value = quote.status;
-        notice.textContent = error.message;
+        setMessage(notice, error.message);
       } finally {
         select.disabled = false;
       }
@@ -59,7 +74,7 @@ export function setupQuotes(request, serviceTitle) {
   async function load(append = false) {
     const version = ++requestVersion;
     const cursor = append ? '&before=' + next : '';
-    notice.textContent = 'Chargement des demandes…';
+    setMessage(notice, 'Chargement des demandes…');
     more.disabled = true;
     try {
       const data = await request('?status=' + filter.value + cursor, {}, '/api/quotes');
@@ -68,9 +83,9 @@ export function setupQuotes(request, serviceTitle) {
       list.append(...data.quotes.map(render));
       next = data.next;
       more.hidden = !next;
-      notice.textContent = list.children.length ? '' : 'Aucune demande pour ce filtre.';
+      setMessage(notice, list.children.length ? '' : 'Aucune demande pour ce filtre.');
     } catch (error) {
-      if (version === requestVersion) notice.textContent = error.message;
+      if (version === requestVersion) setMessage(notice, error.message);
     } finally {
       if (version === requestVersion) more.disabled = false;
     }
@@ -81,10 +96,11 @@ export function setupQuotes(request, serviceTitle) {
   more.addEventListener('click', () => load(true));
   return {
     load,
+    localize() { list.querySelectorAll('[data-created-at]').forEach(formatMeta); },
     clear() {
       requestVersion++;
       list.replaceChildren();
-      notice.textContent = '';
+      setMessage(notice, '');
       more.hidden = true;
       next = null;
     },

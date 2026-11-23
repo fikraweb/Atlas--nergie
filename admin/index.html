@@ -19,6 +19,14 @@
           height="60" /></a
       ><a class="site-link" href="../"
         >Voir le site <span data-nav-icon="diagonal"></span></a
+      ><button
+        class="secondary"
+        id="interface-language"
+        type="button"
+        lang="ar"
+        dir="rtl"
+      >
+        العربية</button
       ><button id="logout" class="secondary" hidden>Déconnexion</button>
     </header>
     <main>
@@ -189,6 +197,7 @@
                     <label
                       >Numéro WhatsApp<input
                         name="whatsappNumber"
+                        dir="ltr"
                         inputmode="numeric"
                         pattern="[1-9][0-9]{7,14}"
                         required
@@ -196,7 +205,7 @@
                     <label
                       >Langue du contenu<select id="edit-language">
                         <option value="fr">Français</option>
-                        <option value="ar">العربية</option>
+                        <option value="ar" lang="ar">العربية</option>
                       </select></label
                     >
                     <label>Service<select id="edit-service"></select></label>
@@ -265,8 +274,8 @@
                     <label
                       >Légende française<input name="captionFr" maxlength="120"
                     /></label>
-                    <label lang="ar"
-                      >العنوان بالعربية<input
+                    <label
+                      >Légende arabe<input
                         name="captionAr"
                         maxlength="120"
                         dir="rtl"
