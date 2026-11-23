@@ -1,3 +1,4 @@
+import { icon } from '../icons.js';
 import { setupPhotos } from './photos.js';
 import { setupQuotes } from './quotes.js';
 import { labels as frenchLabels, services as fr } from '../content.js';
@@ -7,6 +8,10 @@ import { company } from '../config.js';
 const $ = selector => document.querySelector(selector);
 const login = $('#login');
 const dashboard = $('#dashboard');
+const dashboardMenu = $('#dashboard-menu');
+const dashboardNav = $('#dashboard-nav');
+const viewLinks = [...dashboardNav.querySelectorAll('[data-view-link]')];
+const views = [...dashboard.querySelectorAll('[data-view]')];
 const editor = $('#editor');
 const serviceSelect = $('#edit-service');
 const languageSelect = $('#edit-language');
@@ -52,6 +57,7 @@ function logout() {
   $('#photo-form').reset();
   $('#photo-status').textContent = '';
   dashboard.hidden = true;
+  setDashboardMenu(false);
   $('#logout').hidden = true;
   login.hidden = false;
   $('#login-status').textContent = '';
@@ -67,6 +73,48 @@ const quotes = setupQuotes(request, (lang, id) => serviceFor(lang, id).title || 
 const renderPhotos = setupPhotos({
   request, currentDraft: () => draft, serviceSelect, defaults,
   labels: { fr: frenchLabels, ar: arabicLabels },
+});
+
+function setDashboardMenu(open) {
+  dashboardMenu.setAttribute('aria-expanded', String(open));
+  dashboardNav.classList.toggle('is-open', open);
+  dashboardMenu.querySelector('[data-nav-icon]').innerHTML = icon(open ? 'close' : 'menu');
+}
+
+function showDashboardView(focusHeading = false) {
+  const hash = location.hash.slice(1);
+  const active = views.find(view => view.dataset.view === hash) ?? views[0];
+  for (const view of views) view.hidden = view !== active;
+  for (const link of viewLinks) {
+    if (link.dataset.viewLink === active.dataset.view) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  }
+  setDashboardMenu(false);
+  if (active.dataset.view === 'requests') quotes.load();
+  if (focusHeading) {
+    window.scrollTo(0, 0);
+    active.querySelector('h1').focus({ preventScroll: true });
+  }
+}
+
+for (const element of document.querySelectorAll('[data-nav-icon]')) {
+  element.innerHTML = icon(element.dataset.navIcon);
+}
+dashboardMenu.addEventListener('click', () => setDashboardMenu(dashboardMenu.getAttribute('aria-expanded') !== 'true'));
+dashboardNav.addEventListener('click', event => {
+  const link = event.target.closest('[data-view-link]');
+  if (!link || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  event.preventDefault();
+  if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+  showDashboardView(true);
+});
+dashboard.addEventListener('keydown', event => {
+  if (event.key !== 'Escape' || dashboardMenu.getAttribute('aria-expanded') !== 'true') return;
+  setDashboardMenu(false);
+  dashboardMenu.focus();
+});
+window.addEventListener('hashchange', () => {
+  if (!dashboard.hidden) showDashboardView(true);
 });
 
 function showPublished(updatedAt) {
@@ -211,7 +259,7 @@ $('#login-form').addEventListener('submit', async event => {
     login.hidden = true;
     dashboard.hidden = false;
     $('#logout').hidden = false;
-    quotes.load();
+    showDashboardView(true);
     status.textContent = '';
   } catch (error) {
     token = '';

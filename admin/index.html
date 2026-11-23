@@ -1,80 +1,293 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <title>Administration | Atlas Énergie</title>
-  <link rel="icon" href="../assets/logo-atlas.webp">
-  <link rel="stylesheet" href="admin.css">
-  <script type="module" src="admin.js"></script>
-</head>
-<body>
-  <header><a class="brand" href="../"><img src="../assets/logo-atlas.webp" alt="Atlas Énergie" width="100" height="60"></a><a class="site-link" href="../">Voir le site ↗</a><button id="logout" class="secondary" hidden>Se déconnecter</button></header>
-  <main>
-    <section id="login" class="panel login">
-      <h1>Administration</h1>
-      <p>Connectez-vous pour gérer le site et consulter son activité.</p>
-      <form id="login-form">
-        <label>Clé administrateur<input name="token" type="password" required autocomplete="off" spellcheck="false"></label>
-        <button type="submit">Se connecter</button>
-      </form>
-      <p id="login-status" role="status"></p>
-    </section>
-    <div id="dashboard" hidden>
-      <div class="page-heading"><div><p class="eyebrow">ATLAS ÉNERGIE</p><h1>Tableau de bord</h1></div><div class="period"><label>Période <select id="period"><option value="7">7 derniers jours</option><option value="30" selected>30 derniers jours</option><option value="90">90 derniers jours</option></select></label><button id="refresh" class="secondary">Actualiser</button></div></div>
-      <nav class="dashboard-links" aria-label="Sections du tableau de bord">
-        <a href="#metrics">Statistiques</a><a href="#requests">Demandes</a><a href="#service-editor">Services et photos</a>
-      </nav>
-      <p id="stats-status" role="status"></p>
-      <section aria-label="Indicateurs" id="metrics" class="metrics"></section>
-      <div class="stats-grid">
-        <section class="panel"><h2>Vues par jour</h2><p id="date-range" class="sub"></p><div id="timeline" class="timeline" role="img"></div><details><summary>Consulter les chiffres par jour</summary><ul id="daily-list"></ul></details></section>
-        <section class="panel"><h2>Répartition par langue</h2><p class="sub">Vues des pages françaises et arabes</p><div id="languages"></div></section>
-      </div>
-      <section class="panel"><h2>Activité par service</h2><p class="sub">Les devis correspondent aux ouvertures de WhatsApp depuis le formulaire.</p><div class="table-wrap"><table><thead><tr><th scope="col">Service</th><th scope="col">Fiches ouvertes</th><th scope="col">Devis préparés</th></tr></thead><tbody id="services-stats"></tbody></table></div></section>
-      <section class="panel" id="requests">
-        <div class="page-heading">
-          <div><h2>Demandes de devis</h2><p class="sub">Demandes reçues depuis le formulaire du site.</p></div>
-          <div class="period"><label>Statut <select id="quote-filter"><option value="all">Tous</option><option value="new">Nouvelles</option><option value="contacted">Contactées</option><option value="closed">Clôturées</option></select></label><button class="secondary" id="quote-refresh">Actualiser</button></div>
-        </div>
-        <p id="quote-status" role="status"></p>
-        <div id="quote-list"></div>
-        <button id="quote-more" class="secondary" hidden>Afficher les demandes précédentes</button>
-      </section>
-      <section class="panel" id="service-editor"><h2>Modifier le site</h2><p class="sub">Modifiez le contenu des services en français et en arabe, et le numéro WhatsApp.</p>
-        <p class="sub" id="published-at"></p>
-        <form id="editor">
-          <div class="editor-selects">
-            <label>Numéro WhatsApp<input name="whatsappNumber" inputmode="numeric" pattern="[1-9][0-9]{7,14}" required></label>
-            <label>Langue du contenu<select id="edit-language"><option value="fr">Français</option><option value="ar">العربية</option></select></label>
-            <label>Service<select id="edit-service"></select></label>
-          </div>
-          <label>Titre<input name="title" maxlength="100" required dir="auto"></label>
-          <label>Résumé de la carte<textarea name="summary" rows="2" maxlength="300" required dir="auto"></textarea></label>
-          <label>Description de la fiche<textarea name="description" rows="4" maxlength="1500" required dir="auto"></textarea></label>
-          <label>Avantages (une ligne par avantage)<textarea name="benefits" rows="3" dir="auto" required></textarea></label>
-          <label>Installations et solutions (une ligne par élément)<textarea name="solutions" rows="3" dir="auto" required></textarea></label>
-          <button type="submit">Publier les modifications</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Administration | Atlas Énergie</title>
+    <link rel="icon" href="../assets/logo-atlas.webp" />
+    <link rel="stylesheet" href="admin.css" />
+    <script type="module" src="admin.js"></script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="../"
+        ><img
+          src="../assets/logo-atlas.webp"
+          alt="Atlas Énergie"
+          width="100"
+          height="60" /></a
+      ><a class="site-link" href="../"
+        >Voir le site <span data-nav-icon="diagonal"></span></a
+      ><button id="logout" class="secondary" hidden>Déconnexion</button>
+    </header>
+    <main>
+      <section id="login" class="panel login">
+        <h1>Administration</h1>
+        <p>Connectez-vous pour gérer le site et consulter son activité.</p>
+        <form id="login-form">
+          <label
+            >Clé administrateur<input
+              name="token"
+              type="password"
+              required
+              autocomplete="off"
+              spellcheck="false"
+          /></label>
+          <button type="submit">Se connecter</button>
         </form>
-        <p id="publish-status" role="status"></p>
-        <section class="photo-editor" aria-labelledby="photo-title">
-          <h3 id="photo-title">Photos du service sélectionné</h3>
-          <p class="sub">Les photos sont communes aux deux langues. Publiez les modifications après avoir préparé les images.</p>
-          <form id="photo-form">
-            <label>Emplacement<select id="photo-slot"></select></label>
-            <img id="photo-preview" width="320" height="180" alt="" hidden>
-            <div id="photo-captions" class="photo-captions" hidden>
-              <label>Légende française<input name="captionFr" maxlength="120"></label>
-              <label lang="ar">العنوان بالعربية<input name="captionAr" maxlength="120" dir="rtl"></label>
-            </div>
-            <label>Choisir une image<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>
-            <button type="submit" class="secondary">Préparer la photo</button>
-          </form>
-          <p id="photo-status" role="status"></p>
-        </section>
+        <p id="login-status" role="status"></p>
       </section>
-    </div>
-  </main>
-</body>
+      <div id="dashboard" hidden>
+        <aside class="dashboard-sidebar">
+          <p class="sidebar-title"><strong>Gestion du site</strong></p>
+          <button
+            id="dashboard-menu"
+            class="secondary"
+            type="button"
+            aria-expanded="false"
+            aria-controls="dashboard-nav"
+          >
+            <span data-nav-icon="menu"></span> Menu
+          </button>
+          <nav
+            id="dashboard-nav"
+            class="dashboard-links"
+            aria-label="Sections du tableau de bord"
+          >
+            <a href="#statistiques" data-view-link="statistiques"
+              ><span data-nav-icon="bolt"></span> Statistiques</a
+            >
+            <a href="#requests" data-view-link="requests"
+              ><span data-nav-icon="users"></span> Demandes</a
+            >
+            <a href="#service-editor" data-view-link="service-editor"
+              ><span data-nav-icon="controls"></span> Services et photos</a
+            >
+          </nav>
+        </aside>
+        <div class="dashboard-content">
+          <section
+            id="statistiques"
+            data-view="statistiques"
+            aria-labelledby="stats-title"
+          >
+            <div class="page-heading">
+              <div><h1 id="stats-title" tabindex="-1">Statistiques</h1></div>
+              <div class="period">
+                <label
+                  >Période
+                  <select id="period">
+                    <option value="7">7 derniers jours</option>
+                    <option value="30" selected>30 derniers jours</option>
+                    <option value="90">90 derniers jours</option>
+                  </select></label
+                ><button id="refresh" class="secondary">Actualiser</button>
+              </div>
+            </div>
+            <p id="stats-status" role="status"></p>
+            <section
+              aria-label="Indicateurs"
+              id="metrics"
+              class="metrics"
+            ></section>
+            <div class="stats-grid">
+              <section class="panel">
+                <h2>Vues par jour</h2>
+                <p id="date-range" class="sub"></p>
+                <div id="timeline" class="timeline" role="img"></div>
+                <details>
+                  <summary>Consulter les chiffres par jour</summary>
+                  <ul id="daily-list"></ul>
+                </details>
+              </section>
+              <section class="panel">
+                <h2>Répartition par langue</h2>
+                <p class="sub">Vues des pages françaises et arabes</p>
+                <div id="languages"></div>
+              </section>
+            </div>
+            <section class="panel">
+              <h2>Activité par service</h2>
+              <p class="sub">
+                Les devis correspondent aux ouvertures de WhatsApp depuis le
+                formulaire.
+              </p>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Service</th>
+                      <th scope="col">Fiches ouvertes</th>
+                      <th scope="col">Devis préparés</th>
+                    </tr>
+                  </thead>
+                  <tbody id="services-stats"></tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+          <section
+            id="requests"
+            data-view="requests"
+            aria-labelledby="requests-title"
+            hidden
+          >
+            <div class="page-heading">
+              <div>
+                <h1 id="requests-title" tabindex="-1">Demandes</h1>
+                <p class="sub">
+                  Consultez les demandes de devis et suivez les échanges.
+                </p>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="page-heading">
+                <h2>Demandes de devis</h2>
+                <div class="period">
+                  <label
+                    >Statut
+                    <select id="quote-filter">
+                      <option value="all">Tous</option>
+                      <option value="new">Nouvelles</option>
+                      <option value="contacted">Contactées</option>
+                      <option value="closed">Clôturées</option>
+                    </select></label
+                  ><button class="secondary" id="quote-refresh">
+                    Actualiser
+                  </button>
+                </div>
+              </div>
+              <p id="quote-status" role="status"></p>
+              <div id="quote-list"></div>
+              <button id="quote-more" class="secondary" hidden>
+                Afficher les demandes précédentes
+              </button>
+            </div>
+          </section>
+          <section
+            id="service-editor"
+            data-view="service-editor"
+            aria-labelledby="editor-title"
+            hidden
+          >
+            <div class="page-heading">
+              <div>
+                <h1 id="editor-title" tabindex="-1">Services et photos</h1>
+                <p class="sub">
+                  Modifiez les fiches en français et en arabe, les photos et le
+                  numéro WhatsApp.
+                </p>
+              </div>
+            </div>
+            <div class="service-workspace">
+              <div class="panel">
+                <h2>Contenu des fiches</h2>
+                <p class="sub" id="published-at"></p>
+                <form id="editor">
+                  <div class="editor-selects">
+                    <label
+                      >Numéro WhatsApp<input
+                        name="whatsappNumber"
+                        inputmode="numeric"
+                        pattern="[1-9][0-9]{7,14}"
+                        required
+                    /></label>
+                    <label
+                      >Langue du contenu<select id="edit-language">
+                        <option value="fr">Français</option>
+                        <option value="ar">العربية</option>
+                      </select></label
+                    >
+                    <label>Service<select id="edit-service"></select></label>
+                  </div>
+                  <label
+                    >Titre<input
+                      name="title"
+                      maxlength="100"
+                      required
+                      dir="auto"
+                  /></label>
+                  <label
+                    >Résumé de la carte<textarea
+                      name="summary"
+                      rows="2"
+                      maxlength="300"
+                      required
+                      dir="auto"
+                    ></textarea>
+                  </label>
+                  <label
+                    >Description de la fiche<textarea
+                      name="description"
+                      rows="4"
+                      maxlength="1500"
+                      required
+                      dir="auto"
+                    ></textarea>
+                  </label>
+                  <label
+                    >Avantages (une ligne par avantage)<textarea
+                      name="benefits"
+                      rows="3"
+                      dir="auto"
+                      required
+                    ></textarea>
+                  </label>
+                  <label
+                    >Installations et solutions (une ligne par élément)<textarea
+                      name="solutions"
+                      rows="3"
+                      dir="auto"
+                      required
+                    ></textarea>
+                  </label>
+                  <button type="submit">Publier les modifications</button>
+                </form>
+                <p id="publish-status" role="status"></p>
+              </div>
+              <section class="panel photo-editor" aria-labelledby="photo-title">
+                <h2 id="photo-title">Photos du service sélectionné</h2>
+                <p class="sub">
+                  Les photos sont communes aux deux langues. Publiez les
+                  modifications après avoir préparé les images.
+                </p>
+                <form id="photo-form">
+                  <label>Emplacement<select id="photo-slot"></select></label>
+                  <img
+                    id="photo-preview"
+                    width="320"
+                    height="180"
+                    alt=""
+                    hidden
+                  />
+                  <div id="photo-captions" class="photo-captions" hidden>
+                    <label
+                      >Légende française<input name="captionFr" maxlength="120"
+                    /></label>
+                    <label lang="ar"
+                      >العنوان بالعربية<input
+                        name="captionAr"
+                        maxlength="120"
+                        dir="rtl"
+                    /></label>
+                  </div>
+                  <label
+                    >Choisir une image<input
+                      name="photo"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                  /></label>
+                  <button type="submit" class="secondary">
+                    Préparer la photo
+                  </button>
+                </form>
+                <p id="photo-status" role="status"></p>
+              </section>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </body>
 </html>
