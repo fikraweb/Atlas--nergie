@@ -127,10 +127,6 @@ const number = company.whatsappNumber.replace(/[\s+()-]/g, '');
 const hasNumber = /^[1-9]\d{7,14}$/.test(number);
 const whatsappUrl = message => 'https://wa.me/' + number + '?text=' + encodeURIComponent(message);
 
-if (hasNumber) {
-  document.querySelector('#whatsapp-number').textContent = '+' + number;
-}
-
 document.querySelectorAll('[data-whatsapp]').forEach(link => {
   if (hasNumber) {
     link.href = whatsappUrl(labels.greeting);
@@ -202,10 +198,6 @@ form.addEventListener('submit', event => {
   retry.textContent = labels.openWhatsApp;
   status.replaceChildren(labels.review, retry);
 });
-
-for (const field of ['phone', 'email', 'address']) {
-  if (company[field]) document.querySelector('#contact-' + field).textContent = company[field];
-}
 
 const menu = document.querySelector('.menu-toggle');
 const nav = document.querySelector('#navigation');

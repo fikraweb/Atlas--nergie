@@ -10,7 +10,7 @@ Pour le déploiement, publiez le contenu du dépôt sur un hébergement statique
 
 ## Coordonnées
 
-Dans `config.js`, renseignez le numéro WhatsApp international de l’entreprise en chiffres uniquement, ainsi que les coordonnées publiques à afficher dans le pied de page.
+Dans `config.js`, renseignez le numéro WhatsApp international de l’entreprise en chiffres uniquement.
 
 Le formulaire valide les champs et prépare le message. Le visiteur confirme l’envoi dans WhatsApp. Tant que le numéro n’est pas renseigné, le formulaire permet de copier le message et indique que la demande n’a pas été transmise.
 

@@ -677,7 +677,7 @@ footer {
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.35fr 0.75fr 1fr 1fr;
+  grid-template-columns: 1.35fr 0.75fr 1fr;
   gap: 25px;
 }
 .footer-grid p,
