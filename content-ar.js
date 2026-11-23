@@ -73,6 +73,7 @@ export const questions = [
 ];
 
 export const labels = {
+  moreProjects: 'عرض المزيد من الصور',
   solarExample: 'منظومة كهروضوئية على مبنى',
   benefits: 'المزايا',
   solutions: 'التركيبات والحلول',

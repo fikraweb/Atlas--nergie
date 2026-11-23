@@ -1,5 +1,6 @@
 import { company } from './config.js';
 import { icon } from './icons.js';
+import { galleryFor } from './gallery.js';
 
 const arabic = document.documentElement.lang === 'ar';
 const { commitments, labels, questions, services } = await (
@@ -22,11 +23,7 @@ const status = document.querySelector('#form-status');
 
 const asset = name => 'assets/' + name + '.webp';
 const list = items => '<ul>' + items.map(item => '<li>' + item + '</li>').join('') + '</ul>';
-const gallery = services.map(service => ({
-  category: service.id,
-  image: 'project-' + service.id,
-  title: service.project,
-})).concat({ category: 'solar', image: 'solar', title: labels.solarExample });
+const gallery = galleryFor(services, labels, arabic);
 
 function showService(service) {
   detailBody.innerHTML = `
@@ -77,6 +74,11 @@ document.querySelector('#faq-list').innerHTML = questions.map(([question, answer
 
 const filters = document.querySelector('#filters');
 const projectGrid = document.querySelector('#project-grid');
+const moreProjects = document.querySelector('#more-projects');
+moreProjects.textContent = labels.moreProjects;
+const projectPageSize = 10;
+let activeCategory = 'all';
+let projectLimit = projectPageSize;
 filters.innerHTML = [{ id: 'all', title: labels.all }, ...services].map(({ id, title }) =>
   `<button type="button" data-filter="${id}" aria-pressed="${id === 'all'}">${title}</button>`).join('');
 projectGrid.innerHTML = gallery.map((project, index) => `
@@ -84,19 +86,35 @@ projectGrid.innerHTML = gallery.map((project, index) => `
     <img src="${asset(project.image)}" alt="" loading="lazy" width="600" height="350">
     <span>${project.title} ${icon('diagonal')}</span>
   </button>`).join('');
+function updateProjectVisibility() {
+  projectGrid.querySelectorAll('.project').forEach((project, index) => {
+    project.hidden = activeCategory === 'all'
+      ? index >= projectLimit
+      : project.dataset.category !== activeCategory;
+  });
+  moreProjects.hidden = activeCategory !== 'all' || projectLimit >= gallery.length;
+}
+updateProjectVisibility();
+
 filters.addEventListener('click', event => {
   const filter = event.target.closest('[data-filter]');
   if (!filter) return;
+  activeCategory = filter.dataset.filter;
+  projectLimit = projectPageSize;
   filters.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', button === filter));
-  projectGrid.querySelectorAll('.project').forEach(project => {
-    project.hidden = filter.dataset.filter !== 'all' && filter.dataset.filter !== project.dataset.category;
-  });
+  updateProjectVisibility();
+});
+moreProjects.addEventListener('click', () => {
+  const firstNewProject = projectGrid.children[projectLimit];
+  projectLimit += projectPageSize;
+  updateProjectVisibility();
+  firstNewProject?.focus({ preventScroll: true });
 });
 projectGrid.addEventListener('click', event => {
   const button = event.target.closest('[data-project]');
   if (!button) return;
   const project = gallery[Number(button.dataset.project)];
-  detailBody.innerHTML = `<img class="dialog-image" src="${asset(project.image)}" alt="${project.title}">
+  detailBody.innerHTML = `<img class="gallery-lightbox-image" src="${asset(project.image)}" alt="${project.title}">
     <div class="dialog-content"><h2 id="detail-title">${project.title}</h2><p>${labels.example}</p></div>`;
   dialog.scrollTop = 0;
   dialog.showModal();

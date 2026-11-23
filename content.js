@@ -71,6 +71,7 @@ export const questions = [
 ];
 
 export const labels = {
+  moreProjects: 'Afficher plus de photos',
   solarExample: 'Champ photovoltaïque sur bâtiment',
   benefits: 'Les bénéfices',
   solutions: 'Installations et solutions',

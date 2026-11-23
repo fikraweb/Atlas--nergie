@@ -1067,3 +1067,22 @@ html[lang="ar"],
     background: linear-gradient(270deg, #0c192eee, #0c192e99);
   }
 }
+
+.more-projects {
+  display: flex;
+  margin: 24px auto 0;
+  background: white;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.more-projects[hidden] {
+  display: none;
+}
+
+.gallery-lightbox-image {
+  width: 100%;
+  max-height: min(65vh, 520px);
+  object-fit: contain;
+  background: var(--navy);
+}
