@@ -31,6 +31,8 @@ Les compteurs démarrent quand la liaison D1 et son schéma sont en place. Ils r
 
 ### Activer les demandes et les photos
 
+Dans **Workers & Pages → atlas--nergie → Deployments**, vérifiez que la production utilise un commit qui inclut les modules Demandes et Photos (`83da827` ou un commit plus récent). Un redéploiement depuis un ancien commit peut republier l’ancienne version.
+
 Exécutez aussi les deux commandes de `database/dashboard-v2.sql` sur la même base D1. Ces commandes créent les nouvelles tables et préservent les statistiques et modifications existantes. Une fois le code déployé, la boîte **Demandes** affiche les coordonnées et la description du formulaire aux administrateurs uniquement. Les liens WhatsApp directs restent indépendants.
 
 Pour remplacer une couverture, modifier une photo de galerie ou en ajouter une, sélectionnez un service et un emplacement dans **Services et photos**, importez le fichier, puis cliquez sur **Préparer la photo** et **Publier les modifications**. Les photos sont redimensionnées et converties en WebP dans le navigateur. Une galerie peut avoir jusqu’à 20 photos par service. Les images préparées sont stockées dans D1 dès l’import et deviennent visibles sur le site après publication.
