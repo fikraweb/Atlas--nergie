@@ -1,4 +1,7 @@
 const paths = {
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4M5 5l3 3m8 8 3 3M5 19l3-3m8-8 3-3"/><circle cx="12" cy="12" r="7"/>',
+  door: '<path d="M3 21h18M5 21V4h14v17M8 21V7h8v14m-3-7h1"/>',
+  water: '<path d="M2 17c2-2 3-2 5 0s3 2 5 0 3-2 5 0 3 2 5 0M2 21c2-2 3-2 5 0s3 2 5 0 3-2 5 0 3 2 5 0M7 14V5a2 2 0 0 1 4 0m5 9V5a2 2 0 0 1 4 0M7 8h9m-9 4h9"/>',
   arrow: '<path d="M4 12h15m-6-6 6 6-6 6"/>',
   diagonal: '<path d="M6 18 18 6M8 6h10v10"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',

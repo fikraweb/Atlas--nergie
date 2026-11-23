@@ -51,6 +51,33 @@ export const services = [
     ],
     project: 'Éclairage et stores connectés',
   },
+  {
+    id: 'motors', icon: 'settings', title: 'Moteurs électriques', image: 'service-motors',
+    alt: 'Moteur électrique industriel à ailettes de refroidissement',
+    summary: 'Choisissez un moteur électrique adapté à l’équipement qu’il entraîne et à ses conditions d’utilisation.',
+    description: 'Nous examinons la charge, la vitesse et l’alimentation disponibles pour préparer l’installation ou le remplacement du moteur.',
+    benefits: ['Adapter le moteur à la charge à entraîner', 'Choisir les protections électriques appropriées', 'Faciliter l’entretien de l’équipement'],
+    solutions: ['Moteurs pour pompes, ventilateurs et machines', 'Raccordement et protection du moteur', 'Remplacement et vérification du fonctionnement'],
+    project: 'Moteur électrique en atelier',
+  },
+  {
+    id: 'doors', icon: 'door', title: 'Portes électriques', image: 'service-doors',
+    alt: 'Portail coulissant à lames horizontales devant une villa',
+    summary: 'Automatisez l’ouverture de vos portes et portails avec une commande adaptée à votre accès.',
+    description: 'Nous étudions le type d’ouverture, les dimensions, la fréquence d’utilisation et les dispositifs de sécurité nécessaires à la motorisation de votre accès.',
+    benefits: ['Simplifier les entrées et les sorties', 'Adapter la motorisation à l’ouverture existante', 'Prévoir les protections et commandes selon le site'],
+    solutions: ['Portails coulissants et battants', 'Portes de garage et portes sectionnelles', 'Télécommandes, cellules et dispositifs de sécurité'],
+    project: 'Porte de garage motorisée',
+  },
+  {
+    id: 'pools', icon: 'water', title: 'Piscines', image: 'service-pools',
+    alt: 'Piscine extérieure rectangulaire dans le jardin d’une villa',
+    summary: 'Préparez votre projet de piscine, du choix du bassin à la filtration et à l’éclairage.',
+    description: 'Nous prenons en compte l’espace disponible, l’usage du bassin et les contraintes du site pour définir une installation de piscine et ses équipements.',
+    benefits: ['Adapter le bassin à l’espace et à vos usages', 'Prévoir la circulation et la filtration de l’eau', 'Choisir les équipements électriques adaptés au milieu humide'],
+    solutions: ['Installation de piscines', 'Pompes, filtration et équipements du local technique', 'Éclairage et commandes de piscine'],
+    project: 'Piscine dans une cour résidentielle',
+  },
 ];
 
 export const commitments = [

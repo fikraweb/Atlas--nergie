@@ -1,6 +1,6 @@
 # Atlas Énergie
 
-Site vitrine en français pour les cinq services d’Atlas Énergie. Le site est statique et ne nécessite aucune installation de dépendances.
+Site vitrine en français et en arabe pour les huit services d’Atlas Énergie. Le site est statique et ne nécessite aucune installation de dépendances.
 
 ## Démarrage local
 
